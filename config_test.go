@@ -18,6 +18,8 @@ func TestDefaults(t *testing.T) {
 	cfg := &Config{}
 	err := config.Defaults(defaultsData, cfg)
 	require.NoError(t, err)
+	require.Equal(t, MyEnumAlpha, cfg.Enum)
+	require.Len(t, cfg.URLs, 1)
 }
 
 func TestSave(t *testing.T) {
@@ -77,8 +79,14 @@ func TestLoadInvalidEnum(t *testing.T) {
 
 func TestLoadInvalidUnknownField(t *testing.T) {
 	cfg := &Config{}
-	err := config.Load(cfg, "testdata/config_invalid_unknown_field.toml", defaultsData, true)
+	err := config.Load(cfg, "testdata/config_unknown_field.toml", defaultsData, true)
 	require.Error(t, err)
+}
+
+func TestLoadNonStrict(t *testing.T) {
+	cfg := &Config{}
+	err := config.Load(cfg, "testdata/config_unknown_field.toml", defaultsData, false)
+	require.NoError(t, err)
 }
 
 var defaultsData []byte = []byte(`

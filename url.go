@@ -39,8 +39,10 @@ func (spec *URLSpec) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// URLSpecs defines an array of [URLSpec]s.
 type URLSpecs []URLSpec
 
+// URLs returns the [url.URL]s contained in this array.
 func (specs URLSpecs) URLs() []*url.URL {
 	urls := make([]*url.URL, 0, len(specs))
 	for _, spec := range specs {

@@ -10,17 +10,17 @@ import (
 	"fmt"
 )
 
-// MarshalEnum is a helper function to implement [encoding.TestMarshaler]
+// MarshalEnum is a helper function to implement [encoding.TextMarshaler]
 // for enums.
 func MarshalEnum[E comparable](e E, marshalMap map[E]string) ([]byte, error) {
 	s, ok := marshalMap[e]
 	if !ok {
-		return []byte(""), nil
+		return nil, fmt.Errorf("undefined enum: '%v'", e)
 	}
 	return []byte(s), nil
 }
 
-// MarshalEnum is a helper function to implement [encoding.TestUnmarshaler]
+// UnmarshalEnum is a helper function to implement [encoding.TextUnmarshaler]
 // for enums.
 func UnmarshalEnum[E comparable](unmarshalMap map[string]E, text []byte) (E, error) {
 	var defaultEnum E

@@ -24,6 +24,10 @@ func (spec *NetworkSpec) MarshalText() ([]byte, error) {
 // See [encoding.TextUnmarshaler]
 func (spec *NetworkSpec) UnmarshalText(text []byte) error {
 	networkString := string(text)
+	if networkString == "" {
+		spec.Prefix = netip.Prefix{}
+		return nil
+	}
 	parsedNetwork, err := netip.ParsePrefix(networkString)
 	if err != nil {
 		return fmt.Errorf("invalid network: '%s' (cause: %w)", networkString, err)
