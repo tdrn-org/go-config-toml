@@ -22,7 +22,7 @@ func Defaults(defaultsData []byte, cfg any) error {
 	return nil
 }
 
-func Load(path string, defaultsData []byte, cfg any, strict bool) error {
+func Load(cfg any, path string, defaultsData []byte, strict bool) error {
 	logger := slog.With(slog.String("path", path))
 	logger.Info("loading config")
 	err := Defaults(defaultsData, cfg)
@@ -41,6 +41,21 @@ func Load(path string, defaultsData []byte, cfg any, strict bool) error {
 	err = decoder.Decode(cfg)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal config file '%s' (cause: %w)", path, err)
+	}
+	return nil
+}
+
+func Save(cfg any, path string, perm os.FileMode) error {
+	logger := slog.With(slog.String("path", path))
+	logger.Info("saving config")
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, perm)
+	if err != nil {
+		return fmt.Errorf("failed to create/truncate config file '%s' (cause: %w)", path, err)
+	}
+	defer file.Close()
+	err = toml.NewEncoder(file).Encode(cfg)
+	if err != nil {
+		return fmt.Errorf("failed to marshal config to file '%s' (cause: %w)", path, err)
 	}
 	return nil
 }
