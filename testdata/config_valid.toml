@@ -1,0 +1,5 @@
+duration = "5m"
+networks = [ "192.168.1.1/16" ]
+time_location = "Europe/Berlin"
+urls = [ "http://localhost:8080" ]
+regexp = "^$"
