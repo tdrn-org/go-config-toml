@@ -11,10 +11,12 @@ import (
 	"time"
 )
 
+// TimeLocationSpec supports Marshaling of [time.Location] values.
 type TimeLocationSpec struct {
 	*time.Location
 }
 
+// See [encoding.TextMarshaler]
 func (spec *TimeLocationSpec) MarshalText() ([]byte, error) {
 	if spec.Location == nil {
 		return []byte(""), nil
@@ -22,6 +24,7 @@ func (spec *TimeLocationSpec) MarshalText() ([]byte, error) {
 	return []byte(spec.Location.String()), nil
 }
 
+// See [encoding.TextUnmarshaler]
 func (spec *TimeLocationSpec) UnmarshalText(text []byte) error {
 	locationString := string(text)
 	if locationString == "" {

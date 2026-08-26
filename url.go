@@ -11,10 +11,12 @@ import (
 	"net/url"
 )
 
+// URLSpec supports Marshaling of [url.URL] values.
 type URLSpec struct {
 	*url.URL
 }
 
+// See [encoding.TextMarshaler]
 func (spec *URLSpec) MarshalText() ([]byte, error) {
 	if spec.URL == nil {
 		return []byte(""), nil
@@ -22,6 +24,7 @@ func (spec *URLSpec) MarshalText() ([]byte, error) {
 	return []byte(spec.URL.String()), nil
 }
 
+// See [encoding.TextUnmarshaler]
 func (spec *URLSpec) UnmarshalText(text []byte) error {
 	urlString := string(text)
 	if urlString == "" {

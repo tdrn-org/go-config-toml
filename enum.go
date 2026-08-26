@@ -10,6 +10,8 @@ import (
 	"fmt"
 )
 
+// MarshalEnum is a helper function to implement [encoding.TestMarshaler]
+// for enums.
 func MarshalEnum[E comparable](e E, marshalMap map[E]string) ([]byte, error) {
 	s, ok := marshalMap[e]
 	if !ok {
@@ -18,6 +20,8 @@ func MarshalEnum[E comparable](e E, marshalMap map[E]string) ([]byte, error) {
 	return []byte(s), nil
 }
 
+// MarshalEnum is a helper function to implement [encoding.TestUnmarshaler]
+// for enums.
 func UnmarshalEnum[E comparable](unmarshalMap map[string]E, text []byte) (E, error) {
 	var defaultEnum E
 	enumString := string(text)

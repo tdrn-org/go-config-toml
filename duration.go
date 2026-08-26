@@ -11,12 +11,15 @@ import (
 	"time"
 )
 
+// DurationSpec supports Marshaling of [time.Duration] values.
 type DurationSpec time.Duration
 
+// See [encoding.TextMarshaler]
 func (spec *DurationSpec) MarshalText() ([]byte, error) {
 	return []byte(time.Duration(*spec).String()), nil
 }
 
+// See [encoding.TextUnmarshaler]
 func (spec *DurationSpec) UnmarshalText(text []byte) error {
 	durationString := string(text)
 	if durationString == "" {

@@ -11,10 +11,12 @@ import (
 	"regexp"
 )
 
+// RegexpSpec supports Marshaling of [regexp.Regexp] values.
 type RegexpSpec struct {
 	*regexp.Regexp
 }
 
+// See [encoding.TextMarshaler]
 func (spec *RegexpSpec) MarshalText() ([]byte, error) {
 	if spec.Regexp == nil {
 		return []byte(""), nil
@@ -22,6 +24,7 @@ func (spec *RegexpSpec) MarshalText() ([]byte, error) {
 	return []byte(spec.Regexp.String()), nil
 }
 
+// See [encoding.TextUnmarshaler]
 func (spec *RegexpSpec) UnmarshalText(text []byte) error {
 	regexpString := string(text)
 	if regexpString == "" {

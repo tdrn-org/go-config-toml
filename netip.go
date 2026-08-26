@@ -11,14 +11,17 @@ import (
 	"net/netip"
 )
 
+// NetworkSpec supports Marshaling of [netip.Prefix] values.
 type NetworkSpec struct {
 	netip.Prefix
 }
 
+// See [encoding.TextMarshaler]
 func (spec *NetworkSpec) MarshalText() ([]byte, error) {
 	return []byte(spec.Prefix.String()), nil
 }
 
+// See [encoding.TextUnmarshaler]
 func (spec *NetworkSpec) UnmarshalText(text []byte) error {
 	networkString := string(text)
 	parsedNetwork, err := netip.ParsePrefix(networkString)
@@ -29,8 +32,11 @@ func (spec *NetworkSpec) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// NetworkSpecs defines an array of [NetworkSpec]s.
 type NetworkSpecs []NetworkSpec
 
+// Prefixes returns the [netip.Prefix]es contained in this
+// array.
 func (specs NetworkSpecs) Prefixes() []netip.Prefix {
 	networks := make([]netip.Prefix, 0, len(specs))
 	for _, spec := range specs {
