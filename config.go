@@ -9,6 +9,7 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"log/slog"
 	"os"
@@ -19,7 +20,8 @@ import (
 // Defaults creates a default config from the given
 // default config data (usually statically embedded).
 func Defaults(cfg any, defaultsData []byte) error {
-	err := toml.Unmarshal(defaultsData, cfg)
+	decoder := toml.NewDecoder(bytes.NewReader(defaultsData)).DisallowUnknownFields()
+	err := decoder.Decode(cfg)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal config defaults (cause: %w)", err)
 	}
