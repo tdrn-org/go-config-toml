@@ -18,7 +18,7 @@ import (
 
 // Defaults creates a default config from the given
 // default config data (usually statically embedded).
-func Defaults(defaultsData []byte, cfg any) error {
+func Defaults(cfg any, defaultsData []byte) error {
 	err := toml.Unmarshal(defaultsData, cfg)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal config defaults (cause: %w)", err)
@@ -36,7 +36,7 @@ func Defaults(defaultsData []byte, cfg any) error {
 func Load(cfg any, path string, defaultsData []byte, strict bool) error {
 	logger := slog.With(slog.String("path", path))
 	logger.Info("loading config")
-	err := Defaults(defaultsData, cfg)
+	err := Defaults(cfg, defaultsData)
 	if err != nil {
 		return err
 	}

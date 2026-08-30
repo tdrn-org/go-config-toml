@@ -18,7 +18,7 @@ import (
 
 func TestDefaults(t *testing.T) {
 	cfg := &Config{}
-	err := config.Defaults(defaultsData, cfg)
+	err := config.Defaults(cfg, defaultsData)
 	require.NoError(t, err)
 	require.Equal(t, MyEnumAlpha, cfg.Enum)
 	require.Len(t, cfg.URLs, 1)
