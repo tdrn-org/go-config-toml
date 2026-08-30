@@ -11,7 +11,7 @@ import (
 )
 
 // MarshalEnum is a helper function to implement [encoding.TextMarshaler]
-// for enums.
+// for an enum type based on the given map.
 func MarshalEnum[E comparable](e E, marshalMap map[E]string) ([]byte, error) {
 	s, ok := marshalMap[e]
 	if !ok {
@@ -20,8 +20,14 @@ func MarshalEnum[E comparable](e E, marshalMap map[E]string) ([]byte, error) {
 	return []byte(s), nil
 }
 
+// MarshalStringerEnum is a helper function to implement [encoding.TextMarshaler]
+// for an enum type based on the enum type's [fmt.Stringer] interface.
+func MarshalStringerEnum[E fmt.Stringer](e E) ([]byte, error) {
+	return []byte(e.String()), nil
+}
+
 // UnmarshalEnum is a helper function to implement [encoding.TextUnmarshaler]
-// for enums.
+// for an enum type.
 func UnmarshalEnum[E comparable](unmarshalMap map[string]E, text []byte) (E, error) {
 	var defaultEnum E
 	enumString := string(text)

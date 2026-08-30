@@ -7,7 +7,9 @@
 package config_test
 
 import (
+	"fmt"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -114,6 +116,17 @@ const (
 	MyEnumBeta
 )
 
+func (e MyEnum) String() string {
+	switch e {
+	case MyEnumAlpha:
+		return "alpha"
+	case MyEnumBeta:
+		return "beta"
+	default:
+		return ""
+	}
+}
+
 var myEnumMarshalMap map[MyEnum]string = map[MyEnum]string{
 	MyEnumAlpha: "alpha",
 	MyEnumBeta:  "beta",
@@ -125,7 +138,18 @@ var myEnumUnmarshalMap map[string]MyEnum = map[string]MyEnum{
 }
 
 func (e MyEnum) MarshalText() ([]byte, error) {
-	return config.MarshalEnum(e, myEnumMarshalMap)
+	m1, err := config.MarshalEnum(e, myEnumMarshalMap)
+	if err != nil {
+		return m1, err
+	}
+	m2, err := config.MarshalStringerEnum(e)
+	if err != nil {
+		return m1, err
+	}
+	if !slices.Equal(m1, m2) {
+		return nil, fmt.Errorf("marshaling mismatch '%s' / '%s'", string(m1), string(m2))
+	}
+	return m1, nil
 }
 
 func (e *MyEnum) UnmarshalText(text []byte) error {
