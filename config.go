@@ -19,13 +19,13 @@ import (
 
 // Defaults creates a default config from the given
 // default config data (usually statically embedded).
-func Defaults(cfg any, defaultsData []byte) error {
+func Defaults[C any](cfg *C, defaultsData []byte) (*C, error) {
 	decoder := toml.NewDecoder(bytes.NewReader(defaultsData)).DisallowUnknownFields()
 	err := decoder.Decode(cfg)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal config defaults (cause: %w)", err)
+		return nil, fmt.Errorf("failed to unmarshal config defaults (cause: %w)", err)
 	}
-	return nil
+	return cfg, nil
 }
 
 // Load loads a config from a file. Before loading
@@ -35,16 +35,16 @@ func Defaults(cfg any, defaultsData []byte) error {
 // If the strict flag is set non-matching fields
 // will cause errors. Otherwise they are silently
 // ignored.
-func Load(cfg any, path string, defaultsData []byte, strict bool) error {
+func Load[C any](cfg *C, path string, defaultsData []byte, strict bool) (*C, error) {
 	logger := slog.With(slog.String("path", path))
 	logger.Info("loading config")
-	err := Defaults(cfg, defaultsData)
+	_, err := Defaults(cfg, defaultsData)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	file, err := os.Open(path)
 	if err != nil {
-		return fmt.Errorf("failed to open config file '%s' (cause: %w)", path, err)
+		return nil, fmt.Errorf("failed to open config file '%s' (cause: %w)", path, err)
 	}
 	defer file.Close()
 	decoder := toml.NewDecoder(file)
@@ -53,9 +53,9 @@ func Load(cfg any, path string, defaultsData []byte, strict bool) error {
 	}
 	err = decoder.Decode(cfg)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal config file '%s' (cause: %w)", path, err)
+		return nil, fmt.Errorf("failed to unmarshal config file '%s' (cause: %w)", path, err)
 	}
-	return nil
+	return cfg, nil
 }
 
 // Save saves the given config object to the given path.
